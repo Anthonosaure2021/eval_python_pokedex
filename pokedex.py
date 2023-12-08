@@ -32,14 +32,20 @@ class PokemonApp:
                 self.text_display.delete(1.0, END)
                 self.text_display.insert(END, "Pokémon non trouvé.")
 
-    def get_pokemon_info(self, pokemon_name):
-        api_url = f"https://pokeapi.co/api/v2/pokemon/{pokemon_name}/"
-        response = requests.get(api_url)
 
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return None
+    def get_pokemon_info(self, pokemon_name):
+        try:
+            pokemon_number = int(pokemon_name)
+            if 1 <= pokemon_number <= 151:
+                api_url = f"https://pokeapi.co/api/v2/pokemon/{pokemon_number}/"
+                response = requests.get(api_url)
+
+                if response.status_code == 200:
+                    return response.json()
+        except ValueError:
+            pass
+
+        return None
 
     def display_pokemon_info(self, pokemon_info):
         self.text_display.delete(1.0, END)
@@ -57,6 +63,21 @@ class PokemonApp:
         weight = pokemon_info['weight'] / 10  # Convert to kilograms
         self.text_display.insert(END, f"Taille: {height} m\n")
         self.text_display.insert(END, f"Poids: {weight} kg\n")
+
+
+        # Charger et afficher l'image du Pokémon
+        image_url = pokemon_info['sprites']['front_default']
+        image = self.load_image(image_url)
+        self.show_image(image)
+
+    def load_image(self, url):
+        response = requests.get(url)
+        img = Image.open(BytesIO(response.content))
+        return ImageTk.PhotoImage(img)
+
+    def show_image(self, image):
+        self.pokemon_image_label.config(image=image)
+        self.pokemon_image_label.image = image
 
 # Créer et démarrer l'application
 root = Tk()
