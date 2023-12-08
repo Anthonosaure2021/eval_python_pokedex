@@ -1,3 +1,7 @@
+### Pokédex MORIN Anthonin et GOBBE Aurélien
+
+
+
 import requests
 from tkinter import Tk, Label, Button, Entry, Text, END
 
